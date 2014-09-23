@@ -9,7 +9,9 @@ function [ downN, upperN, downP, upperP ] = rootBounds( c )
 % ]
 % bottom bound of negative roots [
     c3 = negativeTransposition(c);   
+    
     downN = -upperPosBound(c3);
+
 % ]
 % upper bound of negative roots [
     c4 = negativeTransposition(c);

@@ -1,19 +1,17 @@
-function [ x0 ] = findApproxRoot( polyn, left, right )
-    [left right]
-
-% step 
-    step = abs(right - left) / 1000;
-    goodEps = 0.01;
-    x = left : step : right;
-    iters = length(x);
-    
+function [ x0 ] = findApproxRoot( poly, left, right, step)
+    goodEps = 10^(-2);
+    xL = left;    
     x0 = right + step;
-    for i = 1 : iters
-        %calcPoly(polyn, x(i))
-        if (abs(calcPoly(polyn, x(i))) < goodEps)
-            x0 = x(i);
+    while (xL <= right - step)
+        xR = xL + step;
+        yLeft  = poly(xL);
+        yRight = poly(xR);
+        
+        if (sign(yLeft) * sign(yRight) < 0 || abs((yLeft + yRight) / 2) < goodEps)
+            x0 = (xL + xR) / 2;
             return;
         end;
+        xL = xR;
     end;
 end
 
