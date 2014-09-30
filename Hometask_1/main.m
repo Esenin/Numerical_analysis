@@ -31,11 +31,12 @@ poly6Der  = @(x) 18*x^5 + 860*x^4 + 500*x^3 -1800*x^2 +250*x + 172;
 format long;
 tic
 
-egRoots = NewtonRoots(polyExample, polyExampleAprx, polyExampleDer)
+%egRoots = NewtonRoots(polyExample, polyExampleAprx, polyExampleDer)
 
 %eqOneRoots = NewtonRoots(poly11, poly11Aprx, poly11Der)
 
-%eqTwoRoots = NewtonRoots(poly12, poly12Aprx, poly12Der)
+poly12
+eqTwoRoots = NewtonRoots(poly12, poly12Aprx, poly12Der)
 
 %eq6Roots = NewtonRoots(poly6, poly6Aprx, poly6Der)
 
