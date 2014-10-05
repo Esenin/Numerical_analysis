@@ -5,10 +5,10 @@ yks = zeros(1, 3);
 
 %const
     EPS = 10^(-5);
-    APRXEPS = 0.06;    
+    APRXEPS = 0.1;    
 
 % find root bounds
-    startX = -2;
+    startX = -2
     stopX = 2;
     
     format shortG;
@@ -16,8 +16,7 @@ yks = zeros(1, 3);
     aprxStep = .01;
     
     fprintf('aprxStep = %i\n', aprxStep);
-    
-    
+        
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
 
@@ -25,9 +24,9 @@ yks = zeros(1, 3);
     for ai = a
         for ki = k
             fprintf('---------------------------------------------------------------\n');
-            fprintf('----    a = %i,     k = %i \n', ai, ki);
+            fprintf('----    a = %i,\t\tk = %i\t\t---- \n\n', ai, ki);
             x0 = startX;
-            lastX = -1 * 10^5;
+            lastX = -999;
             hasRoot = false;
             fA = @(x,y) f(x,y,ai);
             gK = @(x,y) g(x,y,ki);
@@ -43,7 +42,9 @@ yks = zeros(1, 3);
                 end;
                 y01 = (ki - x0^2)^(0.5);
                 y02 = -1 * (ki - x0^2)^(0.5);
-                
+
+                %fff = f(x0, y01, ai);
+                %ggg = g(x0, y01, ki);
                 if (abs(f(x0, y01, ai)) < APRXEPS && abs(g(x0, y01, ki)) < APRXEPS)
                     % near root point
                     [xks, yks] = runNewtonAtPoint(fA, gK, fdxA, fdyA, gdxK, gdyK, x0, y01);
@@ -62,15 +63,15 @@ yks = zeros(1, 3);
                     end;
                     lastX = xks(end);
                 end;
-                
+
+        
                 x0 = x0 + aprxStep;
             end;
             if (~hasRoot)
                 fprintf('----    Roots were not found..\n');
             end;
-            
+
             fprintf('\n\n');
-            
         end;
     end;
          
