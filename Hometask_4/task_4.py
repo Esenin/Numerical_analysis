@@ -52,12 +52,12 @@ def make_list_custom(double_count=False):
     p = np.pi
     custom = [p/10, p/8, p/6, p/3, p/2, 7*p/8]
     if not double_count:
-        return custom
+        return np.array(custom)
     else:
         result = custom
         for i in range(1, len(custom)):
             result.insert(2 * i - 1, (custom[i - 1] + custom[i]) / 2)
-        return result
+        return np.array(result)
 
 
 def make_shifted_list(shift_type, double_count=False):
@@ -78,22 +78,42 @@ def make_shifted_list(shift_type, double_count=False):
     return np.linspace(left, right, 2 * list_size if double_count else list_size)
 
 
-def process_function(fun, xs):
+def process_function(fun, xs, fun_derivate):
     format_str = "{:+15.5f}"
     n_out = 20
+    n_nodes = xs.size
     ys = fun(xs)
+    a_rate_part = np.max(fun_derivate(np.linspace(xs[0], xs[-1], n_out**2))) / (factor(n_nodes + 1))
 
-    print "\t\tx_k = \t", "\t   f(x_k) = \t", "\tL(x_k) = \t", "\tdelta = \t", "\t   A(rate)=\t"
+    print "\t\tx_k = \t", "\t   f(x_k) = \t", "\tL(x_k) = \t", "\tdelta = \t", "\tA(rate),  delta < A\t"
     for x in np.linspace(left_bound, right_bound, n_out):
         f_res = f(x)
         lagrange_res = calc_with_lagrange(xs, ys, x)
+        delta = np.abs(lagrange_res - f_res)
+        a_rate = np.abs(w_fun(x, xs)) * a_rate_part
 
-        print format_str.format(x), format_str.format(f_res), format_str.format(lagrange_res), \
-            format_str.format(np.abs(lagrange_res - f_res))
+        print format_str.format(x), format_str.format(f_res), \
+            format_str.format(lagrange_res), \
+            format_str.format(delta), \
+            format_str.format(a_rate), \
+            " ", delta <= a_rate
 
 
 def main():
-    process_function(f, make_shifted_list(SHIFT_NONE))
+    print "Вариант 22\'\n"
+    print "f(x) = cos^2 (2x)\tg(x) = sin(8x)\n"
+
+    print "I) f, распределение: заданное, число узлов = 6"
+    process_function(f, make_list_custom(), f_derivate_7)
+
+    print "I) f, распределение: смещение влево, число узлов = 6"
+    process_function(f, make_shifted_list(SHIFT_LEFT), f_derivate_7)
+
+    print "I) f, распределение: смещение вправо, число узлов = 6"
+    process_function(f, make_shifted_list(SHIFT_RIGHT), f_derivate_7)
+
+    print "I) f, распределение: смещение по центру, число узлов = 6"
+    process_function(f, make_shifted_list(SHIFT_MIDDLE), f_derivate_7)
 
 
 
