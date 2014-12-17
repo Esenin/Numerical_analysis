@@ -37,18 +37,13 @@ fun_der_y = lambda a, k, x, y: k / (x + 2) - np.cos(a*x + y)
 #
 #######################################################################################################################
 def calc_xarray(h):
-    xs = np.linspace(bounds[0], bounds[1], np.round(bounds[1] - bounds[0]) / h)
+    xs = np.arange(bounds[0], bounds[1] + h, h)
     assert xs[0] == startPoint[0], "xs must be started with left bound value"
     return xs
 
 
 def make_row_out(xys, row, n):
     result = ""
-    if row % 2 == 0:
-        result = str(array_x[row / 2])
-    else:
-        result += "\t"
-    result += " \t"
 
     for j in range(n):
         if j % 2 == row % 2 and j <= row <= j + 2 * (len(xys[j]) - 1):
@@ -62,7 +57,7 @@ def make_row_out(xys, row, n):
 
 
 def print_out_finite_difference(xys):
-    print " x\t\t y"
+    print " Ettas"
     m = len(xys[0])
     n = len(xys)
     for i in range(2 * m):
@@ -138,6 +133,8 @@ def adams_solution(a, k, h=h_general):
             i - 3] + 251.0 / 720.0 * fin_dif[4][i - 4])
     ys = ys[0: -1]
     assert len(xs) == len(ys), "xs, ys size problem"
+    print "Таблица конечных разностей etta"
+    print_out_finite_difference(fin_dif)
     return xs, ys
 
 
@@ -158,7 +155,7 @@ def calc_accuracy(a, k, adams_res, iterator):
 
 
 def process_euler(a, k, h):
-    adams_res = adams_solution(a, k)
+    adams_res = adams_solution(a, k, h)
     eulers_res = euler_solution(a, k, h)
     print "\n----------------------------------------------------------------------------"
     print "\t\tМетод Эйлера\n\ta = ", a, "\tk = ", k, "\n"
@@ -199,11 +196,18 @@ def process_runge_and_adams(a, k):
 
 def main():
     euler_res = process_euler(a_koef[0], k_koef[0], h_general)
-    eunge_res, adams_res = process_runge_and_adams(a_koef[0], k_koef[0])
+    euler_res_half = process_euler(a_koef[0], k_koef[0], h_general / 2.0)
+    euler_res_double = process_euler(a_koef[0], k_koef[0], h_general * 2.0)
+    runge_res, adams_res = process_runge_and_adams(a_koef[0], k_koef[0])
 
 
-    adams_line, = plt.plot(adams_res[0], adams_res[1], label='Adams')
-    eulers_line, = plt.plot(euler_res[0], euler_res[1], label='Euler')
+    plt.plot(runge_res[0], runge_res[1], 'ro', label='Runge-Kutta', linewidth=2.0)
+    plt.plot(adams_res[0], adams_res[1], 'b--', label='Adams', linewidth=2.0)
+    plt.plot(euler_res[0], euler_res[1], label='Euler, h = h', linewidth=2.0)
+    plt.plot(euler_res_half[0], euler_res_half[1], label='Euler, h = h/2', linewidth=2.0)
+    plt.plot(euler_res_double[0], euler_res_double[1], label='Euler, h = 2*h', linewidth=2.0)
+
+
     plt.legend()
     plt.show()
 
